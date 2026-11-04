@@ -1,5 +1,7 @@
 package firehouse;
 
+import java.util.Map;
+
 public final class Game {
     private final TextEngine text;
 
@@ -68,7 +70,16 @@ public final class Game {
         ShiftTimer timer = new ShiftTimer(difficulty.shiftMinutes());
         text.println("Shift started. Difficulty: " + difficulty.label()
                 + ". Time remaining: " + timer.remainingMinutes() + " min.");
+        text.println("Find your gear in the firehouse before you embark.");
         text.println("Type help for commands.");
+        runFirehouse(difficulty, timer);
+    }
+
+    private void runFirehouse(Difficulty difficulty, ShiftTimer timer) {
+        FireStation station = new FireStation();
+        Inventory inventory = new Inventory();
+        look(station.current());
+
         while (!timer.isExpired()) {
             String command = text.readCommand("> ");
             if (command.isEmpty()) {
@@ -79,18 +90,126 @@ public final class Game {
                 text.println("Shift failed. Time ran out.");
                 return;
             }
-            switch (command) {
-                case "help":
-                    printShiftHelp(difficulty, timer);
-                    break;
-                case "quit":
-                case "exit":
-                    text.println("You left the shift.");
-                    return;
-                default:
-                    text.println("Unknown command. Type help for options.");
-                    break;
+
+            if (command.equals("help")) {
+                printFirehouseHelp(difficulty, timer, inventory);
+                continue;
             }
+            if (command.equals("quit") || command.equals("exit")) {
+                text.println("You left the shift.");
+                return;
+            }
+            if (command.equals("look") || command.equals("l")) {
+                look(station.current());
+                continue;
+            }
+            if (command.equals("inventory") || command.equals("inv") || command.equals("i")) {
+                text.println("Inventory: " + inventory.summary());
+                continue;
+            }
+            if (command.startsWith("go ") || command.startsWith("move ")) {
+                move(station, command.substring(command.indexOf(' ') + 1).trim());
+                continue;
+            }
+            if (normalizeDirection(command) != null) {
+                move(station, command);
+                continue;
+            }
+            if (command.startsWith("take ") || command.startsWith("get ") || command.startsWith("grab ")) {
+                String itemName = command.substring(command.indexOf(' ') + 1).trim();
+                takeGear(station, inventory, itemName);
+                continue;
+            }
+            if (command.equals("embark") || command.equals("leave") || command.equals("truck")
+                    || command.equals("dispatch")) {
+                if (!inventory.hasAllRequired()) {
+                    text.println("You still need: " + inventory.missingSummary() + ".");
+                } else {
+                    text.println("All gear secured. Ready for shift dispatch.");
+                    return;
+                }
+                continue;
+            }
+
+            text.println("Unknown command. Type help for options.");
+        }
+    }
+
+    private void look(Room room) {
+        text.println(room.name());
+        text.println(room.description());
+        if (room.gearHere().isEmpty()) {
+            text.println("You see no gear here.");
+        } else {
+            StringBuilder gearLine = new StringBuilder("You see: ");
+            boolean first = true;
+            for (Gear gear : room.gearHere()) {
+                if (!first) {
+                    gearLine.append(", ");
+                }
+                gearLine.append(gear.label());
+                first = false;
+            }
+            text.println(gearLine.toString());
+        }
+        StringBuilder exits = new StringBuilder("Exits: ");
+        boolean firstExit = true;
+        for (Map.Entry<String, String> exit : room.exits().entrySet()) {
+            if (!firstExit) {
+                exits.append(", ");
+            }
+            exits.append(exit.getKey());
+            firstExit = false;
+        }
+        text.println(exits.toString());
+    }
+
+    private void takeGear(FireStation station, Inventory inventory, String itemName) {
+        Gear gear = Gear.fromCommand(itemName);
+        if (gear == null) {
+            text.println("That is not essential gear.");
+            return;
+        }
+        if (inventory.has(gear)) {
+            text.println("You already have the " + gear.label() + ".");
+            return;
+        }
+        if (station.take(gear) == null) {
+            text.println("There is no " + gear.label() + " here.");
+            return;
+        }
+        inventory.add(gear);
+        text.println("Taken: " + gear.label() + ".");
+        if (inventory.hasAllRequired()) {
+            text.println("Gear complete. Type embark when you are ready to leave.");
+        }
+    }
+
+    private void move(FireStation station, String rawDirection) {
+        String direction = normalizeDirection(rawDirection);
+        if (direction == null || !station.go(direction)) {
+            text.println("You cannot go that way.");
+            return;
+        }
+        look(station.current());
+    }
+
+    private static String normalizeDirection(String command) {
+        switch (command) {
+            case "n":
+            case "north":
+                return "north";
+            case "s":
+            case "south":
+                return "south";
+            case "e":
+            case "east":
+                return "east";
+            case "w":
+            case "west":
+                return "west";
+            default:
+                return null;
         }
     }
 
@@ -119,11 +238,13 @@ public final class Game {
         }
     }
 
-    private void printShiftHelp(Difficulty difficulty, ShiftTimer timer) {
-        text.println("Commands: help, quit");
+    private void printFirehouseHelp(Difficulty difficulty, ShiftTimer timer, Inventory inventory) {
+        text.println("Commands: look, go <direction>, take <gear>, inventory, embark, help, quit");
+        text.println("Directions: north, south, east, west");
+        text.println("Gear needed: turnout suit, crowbar, ladder, keys");
+        text.println("Inventory: " + inventory.summary());
+        text.println("Still need: " + inventory.missingSummary());
         text.println("Difficulty: " + difficulty.label());
         text.println("Time remaining: " + timer.remainingMinutes() + " min");
-        text.println("Scenario time limit: " + difficulty.scenarioLimitMinutes() + " min");
-        text.println("Victims to rescue: " + difficulty.victimsToRescue());
     }
 }
