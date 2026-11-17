@@ -74,12 +74,14 @@ public final class Game {
         text.println("Type help for commands.");
         boolean embarked = runFirehouse(difficulty, timer);
         if (embarked && !timer.isExpired()) {
-        	runHouseMission(difficulty, timer);
+        	runMission(difficulty, timer);
+        	runMission(difficulty, timer);
+        	runMission(difficulty, timer);
         }
     }
     
-    private void runHouseMission(Difficulty difficulty, ShiftTimer timer) {
-    	HouseMission mission = new HouseMission(difficulty);
+    private void runMission(Difficulty difficulty, ShiftTimer timer) {
+    	Mission mission = new Mission(difficulty);
     	ShiftTimer scenarioTimer = new ShiftTimer(difficulty.scenarioLimitMinutes());
     	
     	text.println("");
@@ -150,7 +152,7 @@ public final class Game {
         }
     }
 
-    private void lookHouse(HouseMission mission) {
+    private void lookHouse(Mission mission) {
         Room room = mission.current();
         text.println(room.name());
         text.println(room.description());
@@ -174,7 +176,7 @@ public final class Game {
         text.println(exits.toString());
     }
 
-    private void moveHouse(HouseMission mission, String rawDirection) {
+    private void moveHouse(Mission mission, String rawDirection) {
         String direction = normalizeDirection(rawDirection);
         if (direction == null || !mission.go(direction)) {
             text.println("You cannot go that way.");
@@ -183,7 +185,7 @@ public final class Game {
         lookHouse(mission);
     }
 
-    private void rescuePeople(HouseMission mission) {
+    private void rescuePeople(Mission mission) {
         if (mission.rescuePeopleInCurrentRoom()) {
             int rescued = mission.totalPeople() - mission.remainingPeople();
             text.println("You guided a person to safety! (" + rescued + "/" + mission.totalPeople() + " rescued)");
@@ -192,7 +194,7 @@ public final class Game {
         }
     }
 
-    private void printMissionHelp(HouseMission mission, ShiftTimer shiftTimer, ShiftTimer scenarioTimer) {
+    private void printMissionHelp(Mission mission, ShiftTimer shiftTimer, ShiftTimer scenarioTimer) {
         text.println("Commands: look, go <direction>, rescue, leave, help, quit");
         text.println("Directions: north, south, east, west");
         text.println("Victims remaining inside: " + mission.remainingPeople() + " / " + mission.totalPeople());
