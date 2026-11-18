@@ -4,6 +4,7 @@ import java.util.Map;
 
 public final class Game {
     private final TextEngine text;
+    private final HighScores highScores = new HighScores();
 
     public Game(TextEngine text) {
         this.text = text;
@@ -27,7 +28,7 @@ public final class Game {
                 case "2":
                 case "scores":
                 case "high scores":
-                    text.println("No shifts are recorded yet.");
+                    printHighScores();
                     break;
                 case "3":
                 case "exit":
@@ -43,6 +44,13 @@ public final class Game {
             }
         }
         text.println("Shift desk closed.");
+    }
+
+    private void printHighScores() {
+        text.println("HIGH SCORES");
+        for (Difficulty difficulty : Difficulty.values()) {
+            text.println(difficulty.label() + ": " + highScores.get(difficulty));
+        }
     }
 
     private void printIntro() {
@@ -74,9 +82,19 @@ public final class Game {
         text.println("Type help for commands.");
         boolean embarked = runFirehouse(difficulty, timer);
         if (embarked && !timer.isExpired()) {
-        	runMission(difficulty, timer);
-        	runMission(difficulty, timer);
-        	runMission(difficulty, timer);
+            runMission(difficulty, timer);
+            runMission(difficulty, timer);
+            runMission(difficulty, timer);
+
+            int used = difficulty.shiftMinutes() - timer.remainingMinutes();
+            int score = 100 * timer.remainingMinutes() / difficulty.shiftMinutes();
+            text.println("SHIFT FINISHED!");
+            text.println("Difficulty: " + difficulty.label());
+            text.println("Minutes used: " + used + " / " + difficulty.shiftMinutes());
+            text.println("Final score: " + score + "%");
+            if (highScores.record(difficulty, score)) {
+                text.println("New " + difficulty.label() + " high score!");
+            }
         }
     }
     
@@ -95,11 +113,21 @@ public final class Game {
     	String entranceId = mission.current().id();
     	lookHouse(mission);
     	
-    	while (!timer.isExpired() && !scenarioTimer.isExpired()) {
+        while (!timer.isExpired() && !scenarioTimer.isExpired()) {
+            String exit = mission.directionToExit();
+            if (exit == null) {
+                text.println("Exit: You are at the entrance.");
+            } else {
+                text.println("Exit: " + exit);
+            }
+
             String command = text.readCommand("> ");
             if (command.isEmpty()) {
                 continue;
             }
+
+            text.println("");
+            text.println("*******************************************");
             timer.spendCommand();
             scenarioTimer.spendCommand();
 
@@ -164,7 +192,7 @@ public final class Game {
             text.println("ALERT: You spot " + peopleHere + " trapped people here! Type 'rescue' to save one.");
         }
 
-        StringBuilder exits = new StringBuilder("Exits: ");
+        StringBuilder exits = new StringBuilder("Doors: ");
         boolean firstExit = true;
         for (String direction : room.exits().keySet()) {
             if (!firstExit) {
@@ -212,6 +240,8 @@ public final class Game {
             if (command.isEmpty()) {
                 continue;
             }
+            text.println("");
+            text.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             timer.spendCommand();
             if (timer.isExpired()) {
                 text.println("Shift failed. Time ran out.");
@@ -280,7 +310,7 @@ public final class Game {
             }
             text.println(gearLine.toString());
         }
-        StringBuilder exits = new StringBuilder("Exits: ");
+        StringBuilder exits = new StringBuilder("Doors: ");
         boolean firstExit = true;
         for (Map.Entry<String, String> exit : room.exits().entrySet()) {
             if (!firstExit) {

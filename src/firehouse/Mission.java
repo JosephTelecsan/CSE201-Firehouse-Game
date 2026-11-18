@@ -10,6 +10,7 @@ import java.util.Random;
 public final class Mission {	
 	private final Map<String, Integer> peopleByRoom = new LinkedHashMap<>();
 	private final Map<String, Room> rooms = new LinkedHashMap<>();
+    private final Map<String, String> exitDirections = new LinkedHashMap<>();
 	private final Difficulty difficulty;
 	private final String layoutName;
 	private Room current;
@@ -23,7 +24,6 @@ public final class Mission {
         this.difficulty = difficulty;
         this.totalPeople = difficulty.victimsToRescue();
 
-        // Pick 1 of the 5 fixed house layouts at random
         int layoutIndex = random.nextInt(5);
         switch (layoutIndex) {
             case 0:
@@ -51,7 +51,6 @@ public final class Mission {
         placePeopleRandomly(random);
     }
 
-    // Building out the 5 house layouts
 
     private void buildSuburbanTwoStory() {
         Room foyer = add(new Room("foyer", "Front Foyer", "Thick dark smoke curls down the main staircase. Leaking out of the open front door behind you."));
@@ -248,6 +247,10 @@ public final class Mission {
         return remaining;
     }
 
+    public String directionToExit() {
+        return exitDirections.get(current.id());
+    }
+
     public boolean go(String direction) {
         String nextId = current.exits().get(direction);
         if (nextId == null) {
@@ -262,9 +265,10 @@ public final class Mission {
         return room;
     }
 
-    private static void linkBothWays(Room a, String directionFromA, Room b) {
+    private void linkBothWays(Room a, String directionFromA, Room b) {
         a.link(directionFromA, b.id());
         b.link(oppositeDirection(directionFromA), a.id());
+        exitDirections.put(b.id(), oppositeDirection(directionFromA));
     }
 
     private static String oppositeDirection(String direction) {
