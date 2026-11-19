@@ -24,27 +24,31 @@ public final class Mission {
         this.totalPeople = difficulty.victimsToRescue();
 
         // Pick 1 of the 5 fixed house layouts at random
-        int layoutIndex = random.nextInt(5);
+        int layoutIndex = random.nextInt(6);
         switch (layoutIndex) {
             case 0:
-                this.layoutName = "Suburban Two-Story";
-                buildSuburbanTwoStory();
+                this.layoutName = "6 Tanglewood Drive";
+                buildTanglewood();
                 break;
             case 1:
-                this.layoutName = "Ranch";
-                buildRanch();
+                this.layoutName = "13 Willow Street";
+                buildWillow();
                 break;
             case 2:
-                this.layoutName = "Manor";
-                buildManor();
+                this.layoutName = "42 Edgefield Road";
+                buildEdgefield();
                 break;
             case 3:
-                this.layoutName = "Townhouse";
-                buildTownhouse();
+                this.layoutName = "10 Ridgeview Court";
+                buildRidgeview();
                 break;
-            default:
-                this.layoutName = "Cabin";
-                buildCabin();
+            case 4:
+                this.layoutName = "Nell's Diner";
+                buildDiner();
+                break;
+            case 5:
+                this.layoutName = "Grafton Drive";
+                buildGrafton();
                 break;
         }
 
@@ -53,33 +57,45 @@ public final class Mission {
 
     // Building out the 5 house layouts
 
-    private void buildSuburbanTwoStory() {
-        Room foyer = add(new Room("foyer", "Front Foyer", "Thick dark smoke curls down the main staircase. Leaking out of the open front door behind you."));
-        Room living = add(new Room("living", "Living Room", "A couch smolders near the fireplace. Visibility is low."));
+    private void buildTanglewood() {
+        Room right_foyer = add(new Room("east_foyer", "Front Foyer", "Thick dark smoke is pouring out of the open front door behind you."));
+        Room left_foyer = add(new Room("west_foyer", "Front Foyer", "As you get further from the door the smoke gets thicker."));
+        Room living_room = add(new Room("living_room", "Living Room", "The smoke is thicker here, your vission narrows."));
+        Room dining_room = add(new Room("dining_room", "Dining Room", "A collapsed table blocks part of the floor. The cieling creaks."));
         Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
-        Room dining = add(new Room("dining", "Dining Room", "A collapsed table blocks part of the floor. The cieling creaks."));
-        Room hallUp = add(new Room("hall_up", "Upstairs Landing", "The floorboards creak under your boots. Smoke banks heavily near the ceiling."));
-        Room bedroom1 = add(new Room("bedroom1", "Master Bedroom", "The master bedroom of the house. The bed is on fire, smoke billowing."));
-        Room bedroom2 = add(new Room("bedroom2", "Kid's Bedroom", "Toys are scattered across the floor. A window is cracked open."));
-        Room bath = add(new Room("bath", "Upstairs Bathroom", "Steam and smoke mix in the small tiled room."));
-        Room garage = add(new Room("garage", "Attached Garage", "Fumes from paint cans and gasoline make the air sharp."));
-
-        // Downstairs floor plan
-        linkBothWays(foyer, "west", living);
-        linkBothWays(foyer, "east", dining);
-        linkBothWays(dining, "north", kitchen);
-        linkBothWays(kitchen, "east", garage);
-
-        // Upstairs floor plan
-        linkBothWays(foyer, "north", hallUp);
-        linkBothWays(hallUp, "west", bedroom1);
-        linkBothWays(hallUp, "east", bedroom2);
-        linkBothWays(hallUp, "north", bath);
-
-        current = foyer;
+        Room utility_room = add(new Room("utility_room", "Utility Room", "You can hear the car alarm blaring from the garage in front of you."));
+        Room stairs = add(new Room("stairs", "Stairs", "(North to go down) You can't see the bottom of the staircase through the smoke." ));
+        Room garage = add(new Room("garage", "Garage", "The car alarm is blaring, cans of spray paint and caulk burn in the corner."));
+        Room hobby_room = add(new Room("hobby_room", "Hobby Room", "A computer monitor on the desk next to you is melting from the heat."));
+        Room main_bathroom = add(new Room("main_bathroom", "Main Bathroom", "The toilet seat has begun to melt; hanging on the wall are burning towels."));
+        Room nancys_room = add(new Room("nancys_room", "Nancy's Room", "Theres a doll in the corner of the room. Strangely, it seems ok."));
+        Room master_bedroom = add(new Room("master_bedroom", "Master Bedroom", "The master bedroom of the house. The bed is on fire, dark smoke billowing from the flames."));
+        Room ensuite = add(new Room("ensuite", "En Suite Bathroom", "Smoke from the bed is pouring into the bathroom, you can hardly see."));
+        Room basement = add(new Room("basement", "Basement", "The breaker is at the bottom of the stairs, it sends sparks everywhere."));
+        
+        // Floorplan for the western part of the map
+        linkBothWays(right_foyer, "west", left_foyer);
+        linkBothWays(left_foyer, "south", hobby_room);
+        linkBothWays(left_foyer, "west", main_bathroom);
+        linkBothWays(left_foyer, "north", nancys_room);
+        
+        // Floorplan for the nothern part of the map
+        linkBothWays(right_foyer, "north", living_room);
+        linkBothWays(living_room, "west", master_bedroom);
+        linkBothWays(master_bedroom, "north", ensuite);
+        
+        //Floorplan for the eastern part of the map
+        linkBothWays(living_room, "east", stairs);
+        linkBothWays(stairs, "north", basement);
+        linkBothWays(stairs, "east", dining_room);
+        linkBothWays(dining_room, "south", kitchen);
+        linkBothWays(stairs, "south", utility_room);
+        linkBothWays(utility_room, "south", garage);
+        
+        current = right_foyer;
     }
 
-    private void buildRanch() {
+    private void buildWillow() {
         Room porch = add(new Room("porch", "Entry Hall","A narrow hallway leading deeper into the single-story ranch. Smoke hugs the ceiling."));
         Room famRoom = add(new Room("family_room", "Family Room", "A collapsed bookshelf leans against the wall. Books and board games spilled onto the floor."));
         Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
@@ -105,7 +121,7 @@ public final class Mission {
         current = porch;
     }
 
-    private void buildManor() {
+    private void buildEdgefield() {
         Room vestibule = add(new Room("vestibule", "Grand Vestibule", "The small entrance is enclosed in fire. The air is thick with ash."));
         Room parlor = add(new Room("parlor", "Front Parlor", "Heavy curtains are ablaze along the windows."));
         Room study = add(new Room("study", "Library Study", "Burning papers drift through the air like embers."));
@@ -131,7 +147,7 @@ public final class Mission {
         current = vestibule;
     }
 
-    private void buildTownhouse() {
+    private void buildRidgeview() {
         Room entry = add(new Room("entry", "Ground Entryway", "A tight entryway. Alarm sirens wail overhead."));
         Room openLiving = add(new Room("open_living", "Open Living Room", "Modern furniture burns fiercely in the open floor plan."));
         Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
@@ -157,7 +173,7 @@ public final class Mission {
         current = entry;
     }
 
-    private void buildCabin() {
+    private void buildDiner() {
         Room mudroom = add(new Room("mudroom", "Mudroom", "Thick woodsmoke fills the cabin."));
         Room openRoom = add(new Room("open_room", "Open Room", "A wooden coffee table burns ontop of a scortched rug"));
         Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
@@ -182,6 +198,33 @@ public final class Mission {
 
         current = mudroom;
     }
+    
+    private void buildGrafton() {
+        Room foyer = add(new Room("foyer", "Front Foyer", "Thick dark smoke curls down the main staircase. Leaking out of the open front door behind you."));
+        Room living = add(new Room("living", "Living Room", "A couch smolders near the fireplace. Visibility is low."));
+        Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
+        Room dining = add(new Room("dining", "Dining Room", "A collapsed table blocks part of the floor. The cieling creaks."));
+        Room hallUp = add(new Room("hall_up", "Upstairs Landing", "The floorboards creak under your boots. Smoke banks heavily near the ceiling."));
+        Room bedroom1 = add(new Room("bedroom1", "Master Bedroom", "The master bedroom of the house. The bed is on fire, smoke billowing."));
+        Room bedroom2 = add(new Room("bedroom2", "Kid's Bedroom", "Toys are scattered across the floor. A window is cracked open."));
+        Room bath = add(new Room("bath", "Upstairs Bathroom", "Steam and smoke mix in the small tiled room."));
+        Room garage = add(new Room("garage", "Attached Garage", "Fumes from paint cans and gasoline make the air sharp."));
+
+        // Downstairs floor plan
+        linkBothWays(foyer, "west", living);
+        linkBothWays(foyer, "east", dining);
+        linkBothWays(dining, "north", kitchen);
+        linkBothWays(kitchen, "east", garage);
+
+        // Upstairs floor plan
+        linkBothWays(foyer, "north", hallUp);
+        linkBothWays(hallUp, "west", bedroom1);
+        linkBothWays(hallUp, "east", bedroom2);
+        linkBothWays(hallUp, "north", bath);
+
+        current = foyer;
+    }
+
 
     // Random person placement
     
@@ -257,11 +300,14 @@ public final class Mission {
         return true;
     }
 
+    // Helpers for constructing layouts
+    
     private Room add(Room room) {
         rooms.put(room.id(), room);
         return room;
     }
 
+    /** Links room a to room b using the direction FROM room A. */
     private static void linkBothWays(Room a, String directionFromA, Room b) {
         a.link(directionFromA, b.id());
         b.link(oppositeDirection(directionFromA), a.id());
