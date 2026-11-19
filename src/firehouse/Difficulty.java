@@ -1,9 +1,9 @@
 package firehouse;
 
 public enum Difficulty {
-    EASY("Easy", 60, 20, 2),
-    NORMAL("Normal", 45, 15, 3),
-    HARD("Hard", 30, 10, 4);
+    EASY("Easy", 120, 35, 2),
+    NORMAL("Normal", 100, 30, 3),
+    HARD("Hard", 80, 25, 4);
 
     private final String label;
     private final int shiftMinutes;
