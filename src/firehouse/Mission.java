@@ -96,29 +96,38 @@ public final class Mission {
     }
 
     private void buildWillow() {
-        Room porch = add(new Room("porch", "Entry Hall","A narrow hallway leading deeper into the single-story ranch. Smoke hugs the ceiling."));
-        Room famRoom = add(new Room("family_room", "Family Room", "A collapsed bookshelf leans against the wall. Books and board games spilled onto the floor."));
+        Room living_room = add(new Room("living_room", "Living Room", "Smoke pours of the open door behind you; infront of you is a burning couch."));
+        Room gym = add(new Room("gym", "Gym", "The smoke is thick in the room, the treadmill is on fire."));
         Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
-        Room sunroom = add(new Room("sunroom", "Sunroom", "Glass panes are cracked from the heat, letting in a draft."));
-        Room hallway = add(new Room("hallway", "Bedroom Corridor", "A long, smoke-filled hallway connecting the sleeping quarters."));
-        Room bedroom1 = add(new Room("bedroom1", "Master Bedroom", "The master bedroom of the house. The bed is on fire, smoke billowing."));
-        Room guest = add(new Room("guest", "Guest Room", "The guest bedroom of the house. The carpet is on fire."));
-        Room laundry = add(new Room("laundry", "Laundry Room", "The dryer is open, smoke billowing from within"));
-        Room patio = add(new Room("patio", "Enclosed Patio", "Plastic furniture has begun to melt from the radiant heat."));
+        Room studio = add(new Room("studio", "Studio", "The room is filled with smoke and the sound of crackling flames."));
+        Room master_bedroom = add(new Room("master_bedroom", "Master Bedroom", "The master bedroom of the house. The bed is on fire, dark smoke billowing from the flames."));
+        Room bathroom = add(new Room("bathroom", "Bathroom", "The toilet seat has begun to melt; hanging on the wall are burning towels."));
+        Room south_hallway = add(new Room("hallway_south", "South Hallway", "A long, smoke-filled hallway connecting the rooms."));
+        Room north_hallway = add(new Room("hallway_north", "North Hallway", "You travel further down the hallway, the smoke is thicker here."));
+        Room basement_living_room = add(new Room("basement_living_room", "Basement Living Room", "The living room of the basement. There is less smoke down here."));
+        Room basement_bar = add(new Room("basement_bar", "Basement Bar", "The bar area of the basement. Bottles of alcohol are spilt, feeding flames."));
+        Room basement_utility = add(new Room("basement_utility", "Basement Utility Room", "The utility room of the basement. The water heater is on fire; sparks fly from the breaker"));
+        Room stairs = add(new Room("stairs", "Stairs", "The stairs leading down to the basement. The smoke is thick, you can hardly see the bottom."));
 
-        // Main living wing
-        linkBothWays(porch, "north", famRoom);
-        linkBothWays(famRoom, "east", kitchen);
-        linkBothWays(kitchen, "north", sunroom);
-        linkBothWays(sunroom, "east", patio);
+        // Floorplan for the southern half of the first floor
+        linkBothWays(living_room, "north", kitchen);
+        linkBothWays(kitchen, "west", gym);
+        linkBothWays(kitchen, "north", hallway_south);
+        linkBothWays(hallway_south, "east", bathroom);
+        linkBothWays(hallway_south, "west", stairs);
 
-        // Bedroom wing
-        linkBothWays(famRoom, "west", hallway);
-        linkBothWays(hallway, "north", bedroom1);
-        linkBothWays(hallway, "west", guest);
-        linkBothWays(hallway, "south", laundry);
+        // Floorplan for the northern half of the first floor
+        linkBothWays(hallway_south, "north", hallway_north);
+        linkBothWays(hallway_north, "east", studio);
+        linkBothWays(hallway_north, "west", master_bedroom);
 
-        current = porch;
+        // Floorplan for the basement
+        linkBothWays(basement_living_room, "north", stairs);
+        linkBothWays(stairs, "west", basement_utility);
+        linkBothWays(basement_living_room, "east", basement_bar);
+        linkBothWays(basement_bar, "north", basement_utility);
+
+        current = living_room;
     }
 
     private void buildEdgefield() {
