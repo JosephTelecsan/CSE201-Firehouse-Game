@@ -131,29 +131,38 @@ public final class Mission {
     }
 
     private void buildEdgefield() {
-        Room vestibule = add(new Room("vestibule", "Grand Vestibule", "The small entrance is enclosed in fire. The air is thick with ash."));
-        Room parlor = add(new Room("parlor", "Front Parlor", "Heavy curtains are ablaze along the windows."));
-        Room study = add(new Room("study", "Library Study", "Burning papers drift through the air like embers."));
-        Room dining = add(new Room("dining", "Formal Dining Hall", "A chandelier sways above a long mahogany table."));
+        Room hallway_south = add(new Room("hallway_south", "Southern Hallway", "Smoke pours of the open door behind you.The hallway is filled with smoke and heat."));
+        Room hallway_mid = add(new Room("hallway_mid", "Central Hallway", "The further you move, the more smoke fills the air."));
+        Room hallway_north = add(new Room("hallway_north", "Northern Hallway", "You move even further down the hallway, the window is covered in soot"));
+        Room dining_room = add(new Room("dining_room", "Dining Room", "The long dining room table has collapsed, the ceiling creaks above you."));
         Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
-        Room bedroom1 = add(new Room("bedroom1", "Master Bedroom", "The master bedroom of the house. The bed is on fire, smoke billowing."));
+        Room living_room = add(new Room("living_room", "Living Room", "The living room is filled with smoke and flames; the couch is on fire."));
         Room attic = add(new Room("attic", "Attic", "Stifling heat traps smoke under the pitched roof."));
-        Room bedroom2 = add(new Room("bedroom2", "Guest Room", "The bedframe has collapsed, wooden splinters all over the floor"));
-        Room basement = add(new Room("basement", "basement", "Cooler air lingers near the floor; smoke funnels down the steps."));
+        Room stairs_down = add(new Room("stairs_down", "Downstairs Stairs", "The stairs leading down to the basement. The smoke is thick, you can hardly see the bottom."));
+        Room basement = add(new Room("basement", "Basement", "Cooler air lingers near the floor; smoke funnels up the steps."));
+        Room garage = add(new Room("garage", "Garage", "The garage is filled with smoke and flames, the smell of gasoline burning fills your mask."));
+        Room utility = add(new Room("utility", "Utility Room", "A small room containing the water heater and electrical panel. The air is thick with smoke."));
+        Room bathroom = add(new Room("bathroom", "Bathroom", "The bathroom is filled with smoke and heat. The mirror is cracked and the tiles are stained."));
+        Room back_room = add(new Room("back_room", "Back Room", "A back room of the basement, there is no smoke here, but the heat is intense."));
 
-        // downstairs floor plan
-        linkBothWays(vestibule, "north", parlor);
-        linkBothWays(parlor, "west", study);
-        linkBothWays(parlor, "east", dining);
-        linkBothWays(dining, "east", kitchen);
-        linkBothWays(kitchen, "south", basement);
+        //Floorplan for the southern half of the first floor
+        linkBothWays(hallway_south, "north", hallway_mid);
+        linkBothWays(hallway_south, "west", living_room);
+        linkBothWays(hallway_mid, "north", hallway_north);
+        linkBothWays(hallway_mid, "west", kitchen);
 
-        // upstairs floor plan
-        linkBothWays(parlor, "north", bedroom1);
-        linkBothWays(bedroom1, "east", bedroom2);
-        linkBothWays(bedroom1, "north", attic);
+        // Floorplan for the northern half of the first floor
+        linkBothWays(kitchen, "west", utility);
+        linkBothWays(kitchen, "north", bathroom);
+        linkBothWays(hallway_north, "east", dining_room);
+        linkBothWays(dining_room, "south", garage);
 
-        current = vestibule;
+        // Floorplan for the basement
+        linkBothWays(hallway_mid, "east", stairs_down);
+        linkBothWays(stairs_down, "south", basement);
+        linkBothWays(basement, "west", back_room);
+        
+        current = hallway_south;
     }
 
     private void buildRidgeview() {
