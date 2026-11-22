@@ -166,29 +166,35 @@ public final class Mission {
     }
 
     private void buildRidgeview() {
-        Room entry = add(new Room("entry", "Ground Entryway", "A tight entryway. Alarm sirens wail overhead."));
-        Room openLiving = add(new Room("open_living", "Open Living Room", "Modern furniture burns fiercely in the open floor plan."));
+        Room foyer = add(new Room("foyer", "Foyer", "A tight entryway. Alarm sirens wail overhead."));
+        Room dining_room = add(new Room("dining_room", "Dining Room", "Smoke fills the air. The table is on fire, the ceiling creaks."));
         Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
-        Room office = add(new Room("office", "Home Office", "Monitors and papers smolder on a burning desk."));
-        Room stairs = add(new Room("stairs", "Second-Floor Landing", "Heat rises rapidly up the narrow stairwell."));
-        Room bedroom1 = add(new Room("bedroom1", "Master Bedroom", "The master bedroom of the house. The bed is on fire, smoke billowing."));
+        Room living_room = add(new Room("living_room", "Living Room", "The living room is filled with smoke and flames; the couch is on fire."));
+        Room basement = add(new Room("basement", "Basement", "The basement is filled with smoke and heat. The walls are damp and the floor is slippery."));
+        Room master_bedroom = add(new Room("master_bedroom", "Master Bedroom", "The master bedroom of the house. The bed is on fire, smoke billowing."));
         Room walkin = add(new Room("walkin", "Walk-In Closet", "Racks of clothes smolder in the cramped space."));
-        Room balcony = add(new Room("balcony", "Rear Balcony", "Fresh air drafts in through a warped sliding door."));
+        Room back_room = add(new Room("back_room", "Back Room", "A small room at the back of the closet. The smoke is thick and the heat is intense."));
+        Room garage = add(new Room("garage", "Garage", "The garage is filled with smoke and flames; the cars are on fire."));
+        Room bathroom = add(new Room("bathroom", "Bathroom", "The bathroom is filled with smoke and heat. The mirror is cracked and the tiles are stained."));
         Room utility = add(new Room("utility", "Utility Closet", "The water heater hisses loudly in the dark."));
+        Room hallway = add(new Room("hallway", "Hallway", "A long hallway filled with smoke and heat. The floor creaks under your boots."));
 
-        // downstairs floor plan
-        linkBothWays(entry, "north", openLiving);
-        linkBothWays(openLiving, "east", kitchen);
-        linkBothWays(kitchen, "south", utility);
-        linkBothWays(openLiving, "west", balcony);
+        // Floorplan for the east half of the first floor
+        linkBothWays(foyer, "east", kitchen);
+        linkBothWays(kitchen, "east" , master_bedroom);
+        linkBothWays(master_bedroom, "south", walkin);
+        linkBothWays(walkin, "south", back_room);
+        linkBothWays(dining_room, "north", basement);
 
-        // upstairs floor plan
-        linkBothWays(openLiving, "north", stairs);
-        linkBothWays(stairs, "west", office);
-        linkBothWays(stairs, "east", bedroom1);
-        linkBothWays(bedroom1, "north", walkin);
+        // Floorplan for the west half of the first floor
+        linkBothWays(foyer, "west", dining_room);
+        linkBothWays(dining_room, "south", living_room);
+        linkBothWays(dining_room, "west", hallway);
+        linkBothWays(hallway , "north", bathroom);
+        linkBothWays(hallway, "south", utility);
+        linkBothWays(hallway , "west", garage);
 
-        current = entry;
+        current = foyer;
     }
 
     private void buildDiner() {
