@@ -198,29 +198,46 @@ public final class Mission {
     }
 
     private void buildDiner() {
-        Room mudroom = add(new Room("mudroom", "Mudroom", "Thick woodsmoke fills the cabin."));
-        Room openRoom = add(new Room("open_room", "Open Room", "A wooden coffee table burns ontop of a scortched rug"));
-        Room kitchen = add(new Room("kitchen", "Kitchen", "Grease fire remnants hiss on the stove. Cabinets hang open."));
-        Room loft = add(new Room("loft", "Loft", "Smoke banks heavily against the timber rafters."));
-        Room bedroom1 = add(new Room("bedroom1", "Master Bedroom", "The master bedroom of the house. The bed is on fire, smoke billowing."));
-        Room bunk = add(new Room("bunk", "Bunk Room", "Wooden bunk beds creak in the smoky haze."));
-        Room pantry = add(new Room("pantry", "Pantry", "Shelves of canned goods rattle as timbers shift."));
-        Room attic = add(new Room("attic", "Attic", "Stifling heat traps smoke under the pitched roof."));
-        Room bath = add(new Room("bath", "bathroom", "A small bathroom with a frosted, heat-cracked window."));
+        Room foyer = add(new Room("foyer", "Foyer", "Thick dark smoke curls from within the kitchen."));
+        Room dining_area = add(new Room("dining_area", "Dining Area", "The tiles beneath your boots are slick with grease. The red seats are burning."));
+        Room kitchen = add(new Room("kitchen", "Kitchen", "The tiles hiss, fire roaring from the industrial oven. The air is thick with smoke and heat."));
+        Room counter_area = add(new Room("counter_area", "Counter Area", "The counter is cluttered with half-eaten dishes and spilled drinks."));
+        Room storage = add(new Room("storage", "Storage Room", "a small room filled with ingredients and supplies, the air is thick with smoke."));
+        Room walk_in = add(new Room("walk_in", "Walk-in", "The light is off and the walk-in is warm."));
+        Room janitors_closet = add(new Room("janitors_closet", "Janitor's Closet", "Shelves of cleaning supplies rattle in the heat. The smell of bleach is strong."));
+        Room staff_hallway_east = add(new Room("staff_hallway_east", "Staff Hallway East", "The hallway is filled with smoke, the tiles are slick with grease."));
+        Room staff_hallway_west = add(new Room("staff_hallway_west", "Staff Hallway West", "The hallway is filled with smoke, the tiles are slick with grease."));
+        Room staff_hallway_middle = add(new Room("staff_hallway_middle", "Staff Hallway Middle", "The hallway is filled with smoke, the tiles are slick with grease."));
+        Room break_room = add(new Room("break_room", "Break Room", "A small room with a table and chairs, the air is thick with smoke."));
+        Room managers_office = add(new Room("managers_office", "Manager's Office", "The office is filled with smoke, the papers on the desk are smoldering."));
+        Room staff_bathroom = add(new Room("staff_bathroom", "Staff Bathroom", "The bathroom is filled with smoke and heat. The mirror is cracked and the tiles are stained."));
+        Room hallway_south = add(new Room("hallway_south", "South Hallway", "A long hallway filled with smoke and heat. The floor creaks under your boots."));
+        Room hallway_north = add(new Room("hallway_north", "North Hallway", "A long hallway filled with smoke and heat. The floor creaks under your boots."));
+        Room womens_bathroom = add(new Room("womens_bathroom", "Women's Bathroom", "The bathroom is filled with smoke and heat. The mirror is cracked and the tiles are stained."));
+        Room mens_bathroom = add(new Room("mens_bathroom", "Men's Bathroom", "The bathroom is filled with smoke and heat. The mirror is cracked and the tiles are stained."));
 
-        // downstairs floor plan
-        linkBothWays(mudroom, "north", openRoom);
-        linkBothWays(openRoom, "west", kitchen);
-        linkBothWays(kitchen, "south", pantry);
-        linkBothWays(openRoom, "east", bedroom1);
-        linkBothWays(bedroom1, "south", bath);
+        // Customer area floorplan
+        linkBothWays(foyer, "north", dining_area);
+        linkBothWays(dining_area, "east", counter_area);
+        linkBothWays(womens_bathroom, "west", hallway_south);
+        linkBothWays(hallway_south, "north", hallway_north);
+        linkBothWays(mens_bathroom, "west", hallway_north);
+        linkBothWays(hallway_south, "east", staff_hallway_west);
+        linkBothWays(counter_area, "north", kitchen);
 
-        // upstairs floor plan
-        linkBothWays(openRoom, "north", loft);
-        linkBothWays(loft, "west", bunk);
-        linkBothWays(loft, "north", attic);
+        // Staff area floorplan
+        linkBothWays(kitchen, "north", storage);
+        linkBothWays(storage, "east", walk_in);
+        linkBothWays(kitchen, "west", staff_hallway_east);
+        linkBothWays(staff_hallway_east, "west", staff_hallway_middle);
+        linkBothWays(staff_hallway_middle, "west", staff_hallway_west);
+        linkBothWays(staff_hallway_middle, "north", break_room);
+        linkBothWays(staff_hallway_east, "north", managers_office);
+        linkBothWays(staff_hallway_west, "north", staff_bathroom);
+        linkBothWays(staff_hallway_west, "south", janitors_closet);
+        linkBothWays(dining_area, "north", hallway_south);
 
-        current = mudroom;
+        current = foyer;
     }
     
     private void buildGrafton() {
